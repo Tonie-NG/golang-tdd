@@ -1,7 +1,8 @@
 package integers
 
-
-// Add takes two integers and returns the sum of them.
+// Adds 2 integers and returns their sum
 func Add(x, y int) int {
-	return x + y
+  sum := x + y
+
+  return (sum)
 }
