@@ -21,8 +21,8 @@ type Shape interface {
 }
 
 func (t Triangle) Area() float64 {
-/*   result := 0.5 * (t.base * t.height) */
-  return (0)
+  result := 0.5 * (t.base * t.height)
+  return (result)
 }
 
 func (r Rectangle) Area() float64 {
