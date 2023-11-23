@@ -1,22 +1,70 @@
 package dictmaps
 
-import (
-	"errors"
+const (
+  ErrWordExists = DictionaryErr("cannot add word because it already exists")
+  ErrWordDoesNotExist = DictionaryErr("cannot update word because it does not exist")
+  ErrNotFound = DictionaryErr("could not find the word you were looking for")
 )
 
-var ErrNotFound = errors.New("could not find the word you were looking for")
+type DictionaryErr string
+
+func (e DictionaryErr) Error() string {
+  return string(e)
+}
+
 type Dictionary map[string]string
 
-func (d Dictionary) Search(key string) (string, error) {
-  definition, ok := d[key]
+func (d Dictionary) Search (word string) (string, error) {
+  definition, ok := d[word]
 
   if !ok {
     return "", ErrNotFound
   }
+
   return definition, nil
 }
 
-func (d Dictionary) Add(key, value string) (string, error) {
-  d[key] = value
-  return value, nil
+func (d Dictionary) Add (word, value string) error{
+  _, err := d.Search(word)
+
+  switch err {
+  case ErrNotFound:
+    d[word] = value
+  case nil:
+    return ErrWordExists
+  default:
+    return err
+  }
+  
+  return nil
+}
+
+func (d Dictionary) Update (word, newdefinition string) error {
+  _, err := d.Search(word)
+
+  switch err {
+  case ErrNotFound:
+    return ErrWordDoesNotExist
+  case nil:
+    d[word] = newdefinition
+  default:
+    return err
+  }
+
+  return nil
+}
+
+func (d Dictionary) Delete (word string) error {
+  _, err := d.Search(word)
+
+  switch err {
+  case ErrNotFound:
+    return ErrWordDoesNotExist
+  case nil:
+    delete(d, word)
+  default:
+    return err
+  }
+
+  return nil
 }
